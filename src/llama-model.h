@@ -716,6 +716,7 @@ struct llama_model {
         return arch == LLM_ARCH_OPENPANGU || llm_arch_is_dsv4(arch)
             || arch == LLM_ARCH_LAGUNA    || arch == LLM_ARCH_GEMMA4
             || arch == LLM_ARCH_MAPLE
+            || arch == LLM_ARCH_SPARK2_5
             || supports_dflash_swa_compress() ;
     }
 
