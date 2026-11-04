@@ -1287,6 +1287,27 @@ done:
     return res;
 }
 
+bool common_speculative_needs_all_target_hidden(const common_speculative * spec) {
+    if (spec == nullptr) {
+        return false;
+    }
+
+    // DFlash / DSpark capture all batch feature rows
+    if (common_speculative_get_dflash_state(spec) != nullptr) {
+        return true;
+    }
+
+    // MTP: only stateful variants need all prompt hidden rows for warmup.
+    // Stateless assistants (gemma4-assistant) only need the last row.
+    const auto * mtp_state = common_speculative_get_mtp_state(spec);
+    if (mtp_state != nullptr) {
+        return !mtp_state->constant_draft_positions;
+    }
+
+    // N-gram, suffix decoding, and other drafters don't consume target hidden states
+    return false;
+}
+
 // initialization of the speculative decoding system
 //
 common_speculative * common_speculative_init(
